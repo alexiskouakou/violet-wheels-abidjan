@@ -25,7 +25,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const vedette = vehicles.find((v) => v.vedette) ?? vehicles[0];
+  const vedette = vehicles.find((v) => v.vedette) ?? vehicles[0]!;
 
   return (
     <main className="min-h-screen bg-background">
