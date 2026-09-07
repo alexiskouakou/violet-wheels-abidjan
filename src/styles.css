@@ -156,3 +156,13 @@
     color: var(--color-foreground);
   }
 }
+
+@utility bg-hero-gradient {
+  background-image: var(--gradient-hero);
+}
+
+@utility text-gradient-brand {
+  background-image: var(--gradient-hero);
+  background-clip: text;
+  color: transparent;
+}
