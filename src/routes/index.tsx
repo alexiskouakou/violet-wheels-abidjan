@@ -1,8 +1,18 @@
+import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ShieldCheck, FileCheck2, Handshake, ArrowRight } from "lucide-react";
+import { ShieldCheck, FileCheck2, Handshake, ArrowRight, SlidersHorizontal } from "lucide-react";
 import { vehicles, formatPrice, CONTACT_PHONE_DISPLAY } from "@/data/vehicles";
 import { VehicleCard } from "@/components/VehicleCard";
 import { ContactButtons } from "@/components/ContactButtons";
+import { PreferencesModal } from "@/components/PreferencesModal";
+import { VehicleFilters } from "@/components/VehicleFilters";
+import {
+  emptyFilters,
+  filterVehicles,
+  loadFilters,
+  saveFilters,
+  type Filters,
+} from "@/lib/filters";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -26,6 +36,21 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const vedette = vehicles.find((v) => v.vedette) ?? vehicles[0]!;
+  const [filters, setFilters] = useState<Filters>(emptyFilters);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
+    const saved = loadFilters();
+    if (saved) setFilters(saved);
+    else setModalOpen(true);
+  }, []);
+
+  const update = (f: Filters) => {
+    setFilters(f);
+    saveFilters(f);
+  };
+
+  const resultats = filterVehicles(vehicles, filters);
 
   return (
     <main className="min-h-screen bg-background">
@@ -126,14 +151,56 @@ function Index() {
       <section id="vehicules" className="mx-auto max-w-6xl px-4 pb-20">
         <h2 className="text-3xl font-extrabold">Véhicules disponibles</h2>
         <p className="mt-2 text-muted-foreground">
-          {vehicles.length} véhicules en stock à Abidjan, prêts à être essayés.
+          {resultats.length} véhicule{resultats.length > 1 ? "s" : ""} sur {vehicles.length} correspondent à vos critères.
         </p>
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {vehicles.map((v) => (
-            <VehicleCard key={v.id} vehicle={v} />
-          ))}
+
+        <div className="mt-5">
+          <VehicleFilters filters={filters} onChange={update} />
         </div>
+
+        <div className="mt-4 flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={() => setModalOpen(true)}
+            className="inline-flex items-center gap-2 rounded-full border border-primary px-5 py-2.5 text-sm font-semibold text-primary hover:bg-primary hover:text-primary-foreground"
+          >
+            Modifier mes réponses
+          </button>
+          <Link
+            to="/recherche"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
+          >
+            <SlidersHorizontal className="size-4" aria-hidden="true" /> Recherche avancée
+          </Link>
+        </div>
+
+        {resultats.length === 0 ? (
+          <p className="mt-8 rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground">
+            Aucun véhicule ne correspond à vos critères. Élargissez votre budget ou
+            demandez conseil à notre assistant.
+          </p>
+        ) : (
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {resultats.map((v) => (
+              <VehicleCard key={v.id} vehicle={v} />
+            ))}
+          </div>
+        )}
       </section>
+
+      <PreferencesModal
+        open={modalOpen}
+        initial={filters}
+        onClose={() => {
+          setModalOpen(false);
+          saveFilters(filters);
+        }}
+        onSubmit={(f) => {
+          update(f);
+          setModalOpen(false);
+          document.getElementById("vehicules")?.scrollIntoView({ behavior: "smooth" });
+        }}
+      />
 
       <footer className="border-t border-border bg-card">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-10 sm:flex-row sm:items-center sm:justify-between">
