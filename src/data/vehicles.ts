@@ -14,6 +14,7 @@ export type Vehicle = {
   modele: string;
   annee: number;
   prix: number;
+  categorie: "SUV" | "Berline" | "Pick-up" | "Citadine";
   image: string;
   kilometrage: number;
   carburant: string;
@@ -39,6 +40,7 @@ export const vehicles: Vehicle[] = [
     modele: "Urban Cross",
     annee: 2022,
     prix: 12500000,
+    categorie: "SUV",
     image: hero,
     kilometrage: 38000,
     carburant: "Essence",
@@ -70,6 +72,7 @@ export const vehicles: Vehicle[] = [
     modele: "Corolla",
     annee: 2021,
     prix: 9800000,
+    categorie: "Berline",
     image: car1,
     kilometrage: 52000,
     carburant: "Essence",
@@ -99,6 +102,7 @@ export const vehicles: Vehicle[] = [
     modele: "Ranger",
     annee: 2020,
     prix: 16500000,
+    categorie: "Pick-up",
     image: car2,
     kilometrage: 74000,
     carburant: "Diesel",
@@ -128,6 +132,7 @@ export const vehicles: Vehicle[] = [
     modele: "City",
     annee: 2019,
     prix: 5200000,
+    categorie: "Citadine",
     image: car3,
     kilometrage: 88000,
     carburant: "Essence",
@@ -156,6 +161,7 @@ export const vehicles: Vehicle[] = [
     modele: "Pathfinder",
     annee: 2023,
     prix: 24900000,
+    categorie: "SUV",
     image: car4,
     kilometrage: 21000,
     carburant: "Essence",
