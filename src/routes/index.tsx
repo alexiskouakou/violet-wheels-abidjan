@@ -1,8 +1,18 @@
+import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ShieldCheck, FileCheck2, Handshake, ArrowRight } from "lucide-react";
+import { ShieldCheck, FileCheck2, Handshake, ArrowRight, SlidersHorizontal } from "lucide-react";
 import { vehicles, formatPrice, CONTACT_PHONE_DISPLAY } from "@/data/vehicles";
 import { VehicleCard } from "@/components/VehicleCard";
 import { ContactButtons } from "@/components/ContactButtons";
+import { PreferencesModal } from "@/components/PreferencesModal";
+import { VehicleFilters } from "@/components/VehicleFilters";
+import {
+  emptyFilters,
+  filterVehicles,
+  loadFilters,
+  saveFilters,
+  type Filters,
+} from "@/lib/filters";
 
 export const Route = createFileRoute("/")({
   head: () => ({
