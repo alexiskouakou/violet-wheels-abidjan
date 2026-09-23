@@ -2,7 +2,10 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { vehicles, formatPrice, CONTACT_PHONE_DISPLAY } from "@/data/vehicles";
 
+export const DAILY_LIMIT = 15;
+
 const schema = z.object({
+  sessionId: z.string().min(8).max(64),
   messages: z
     .array(
       z.object({
@@ -20,8 +23,34 @@ export const askAssistant = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const apiKey = process.env["LOVABLE_API_KEY"];
     if (!apiKey) {
-      return { reply: "L'assistant est momentanément indisponible. Contactez-nous sur WhatsApp." };
+      return { reply: "L'assistant est momentanément indisponible. Contactez-nous sur WhatsApp.", restant: 0 };
     }
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const jour = new Date().toISOString().slice(0, 10);
+    const { data: usage } = await supabaseAdmin
+      .from("ai_chat_usage")
+      .select("messages")
+      .eq("session_id", data.sessionId)
+      .eq("jour", jour)
+      .maybeSingle();
+
+    const dejaUtilises = (usage as { messages?: number } | null)?.messages ?? 0;
+    if (dejaUtilises >= DAILY_LIMIT) {
+      return {
+        reply: `Vous avez atteint la limite de ${DAILY_LIMIT} messages pour aujourd'hui. Revenez demain ou contactez-nous directement par WhatsApp ou au ${CONTACT_PHONE_DISPLAY}.`,
+        restant: 0,
+      };
+    }
+
+    await supabaseAdmin
+      .from("ai_chat_usage")
+      .upsert(
+        { session_id: data.sessionId, jour, messages: dejaUtilises + 1 } as never,
+        { onConflict: "session_id,jour" },
+      );
+    const restant = DAILY_LIMIT - (dejaUtilises + 1);
+
 
     const stock = vehicles
       .map(
@@ -56,13 +85,13 @@ ${current ? `\nL'utilisateur consulte actuellement : ${current.nom} (${current.a
     });
 
     if (res.status === 429) {
-      return { reply: "Trop de demandes en ce moment, réessayez dans un instant." };
+      return { reply: "Trop de demandes en ce moment, réessayez dans un instant.", restant };
     }
     if (res.status === 402) {
-      return { reply: "L'assistant est temporairement indisponible. Écrivez-nous sur WhatsApp." };
+      return { reply: "L'assistant est temporairement indisponible. Écrivez-nous sur WhatsApp.", restant };
     }
     if (!res.ok) {
-      return { reply: "Désolé, une erreur est survenue. Réessayez ou contactez-nous par téléphone." };
+      return { reply: "Désolé, une erreur est survenue. Réessayez ou contactez-nous par téléphone.", restant };
     }
 
     const json = (await res.json()) as {
@@ -72,5 +101,6 @@ ${current ? `\nL'utilisateur consulte actuellement : ${current.nom} (${current.a
       reply:
         json.choices?.[0]?.message?.content ??
         "Je n'ai pas compris, pouvez-vous reformuler ?",
+      restant,
     };
   });

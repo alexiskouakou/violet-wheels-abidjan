@@ -1,0 +1,105 @@
+import { useState } from "react";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { supabase } from "@/integrations/supabase/client";
+
+export const Route = createFileRoute("/auth")({
+  head: () => ({
+    meta: [
+      { title: "Connexion espace vendeur — AutoIvoire" },
+      { name: "description", content: "Accès réservé à l'équipe AutoIvoire pour gérer les véhicules en vente à Abidjan." },
+      { property: "og:title", content: "Connexion espace vendeur — AutoIvoire" },
+      { property: "og:description", content: "Accès réservé à l'équipe AutoIvoire." },
+      { name: "robots", content: "noindex" },
+    ],
+  }),
+  component: AuthPage,
+});
+
+function AuthPage() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [erreur, setErreur] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErreur("");
+    setLoading(true);
+    const { error } =
+      mode === "login"
+        ? await supabase.auth.signInWithPassword({ email, password })
+        : await supabase.auth.signUp({
+            email,
+            password,
+            options: { emailRedirectTo: window.location.origin + "/admin" },
+          });
+    setLoading(false);
+    if (error) {
+      setErreur(
+        error.message.includes("Invalid login")
+          ? "E-mail ou mot de passe incorrect."
+          : error.message,
+      );
+      return;
+    }
+    const { data } = await supabase.auth.getSession();
+    if (data.session) navigate({ to: "/admin" });
+    else setErreur("Compte créé. Connectez-vous maintenant.");
+  };
+
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-background px-4">
+      <form
+        onSubmit={submit}
+        className="w-full max-w-sm rounded-3xl border border-border bg-card p-7 shadow-card"
+      >
+        <Link to="/" className="text-lg font-extrabold">
+          Auto<span className="text-primary">Ivoire</span>
+        </Link>
+        <h1 className="mt-4 text-xl font-bold">
+          {mode === "login" ? "Connexion espace vendeur" : "Créer le compte vendeur"}
+        </h1>
+
+        <label className="mt-5 block text-sm font-medium">E-mail</label>
+        <input
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="mt-1 w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm"
+        />
+
+        <label className="mt-4 block text-sm font-medium">Mot de passe</label>
+        <input
+          type="password"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="mt-1 w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm"
+        />
+
+        {erreur && <p className="mt-3 text-sm text-destructive">{erreur}</p>}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="mt-6 w-full rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground disabled:opacity-60"
+        >
+          {loading ? "Patientez…" : mode === "login" ? "Se connecter" : "Créer le compte"}
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setMode(mode === "login" ? "signup" : "login")}
+          className="mt-3 w-full text-center text-xs text-muted-foreground hover:text-primary"
+        >
+          {mode === "login"
+            ? "Première connexion ? Créer le compte"
+            : "J'ai déjà un compte, me connecter"}
+        </button>
+      </form>
+    </main>
+  );
+}

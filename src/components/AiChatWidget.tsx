@@ -7,12 +7,25 @@ import { askAssistant } from "@/lib/ai-chat.functions";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
+const SESSION_KEY = "autoivoire-session-id";
+
+function getSessionId() {
+  if (typeof window === "undefined") return "";
+  let id = window.localStorage.getItem(SESSION_KEY);
+  if (!id) {
+    id = crypto.randomUUID();
+    window.localStorage.setItem(SESSION_KEY, id);
+  }
+  return id;
+}
+
 export function AiChatWidget() {
   const params = useParams({ strict: false }) as { id?: string };
   const ask = useServerFn(askAssistant);
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [restant, setRestant] = useState<number | null>(null);
   const [messages, setMessages] = useState<Msg[]>([
     {
       role: "assistant",
@@ -26,9 +39,11 @@ export function AiChatWidget() {
     endRef.current?.scrollIntoView({ block: "end" });
   }, [messages, open]);
 
+  const bloque = restant !== null && restant <= 0;
+
   const send = async () => {
     const text = input.trim();
-    if (!text || loading) return;
+    if (!text || loading || bloque) return;
     const next = [...messages, { role: "user" as const, content: text }];
     setMessages(next);
     setInput("");
@@ -36,10 +51,12 @@ export function AiChatWidget() {
     try {
       const res = await ask({
         data: {
+          sessionId: getSessionId(),
           messages: next.slice(-20).map((m) => ({ role: m.role, content: m.content })),
           ...(params.id ? { vehicleId: params.id } : {}),
         },
       });
+      setRestant(res.restant);
       setMessages([...next, { role: "assistant", content: res.reply }]);
     } catch {
       setMessages([
@@ -53,6 +70,7 @@ export function AiChatWidget() {
       setLoading(false);
     }
   };
+
 
   return (
     <>
@@ -109,22 +127,32 @@ export function AiChatWidget() {
               e.preventDefault();
               void send();
             }}
-            className="flex items-center gap-2 border-t border-border p-3"
+            className="border-t border-border p-3"
           >
-            <input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Votre question…"
-              className="flex-1 rounded-full border border-border bg-background px-4 py-2.5 text-sm"
-            />
-            <button
-              type="submit"
-              disabled={loading}
-              aria-label="Envoyer"
-              className="rounded-full bg-primary p-2.5 text-primary-foreground disabled:opacity-50"
-            >
-              <Send className="size-4" />
-            </button>
+            <div className="flex items-center gap-2">
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                disabled={bloque}
+                placeholder={bloque ? "Limite du jour atteinte" : "Votre question…"}
+                className="flex-1 rounded-full border border-border bg-background px-4 py-2.5 text-sm disabled:opacity-60"
+              />
+              <button
+                type="submit"
+                disabled={loading || bloque}
+                aria-label="Envoyer"
+                className="rounded-full bg-primary p-2.5 text-primary-foreground disabled:opacity-50"
+              >
+                <Send className="size-4" />
+              </button>
+            </div>
+            {restant !== null && (
+              <p className="mt-2 text-center text-[11px] text-muted-foreground">
+                {restant > 0
+                  ? `${restant} message${restant > 1 ? "s" : ""} restant${restant > 1 ? "s" : ""} aujourd'hui`
+                  : "Limite de 15 messages par jour atteinte"}
+              </p>
+            )}
           </form>
         </div>
       )}
