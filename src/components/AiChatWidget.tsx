@@ -127,22 +127,32 @@ export function AiChatWidget() {
               e.preventDefault();
               void send();
             }}
-            className="flex items-center gap-2 border-t border-border p-3"
+            className="border-t border-border p-3"
           >
-            <input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Votre question…"
-              className="flex-1 rounded-full border border-border bg-background px-4 py-2.5 text-sm"
-            />
-            <button
-              type="submit"
-              disabled={loading}
-              aria-label="Envoyer"
-              className="rounded-full bg-primary p-2.5 text-primary-foreground disabled:opacity-50"
-            >
-              <Send className="size-4" />
-            </button>
+            <div className="flex items-center gap-2">
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                disabled={bloque}
+                placeholder={bloque ? "Limite du jour atteinte" : "Votre question…"}
+                className="flex-1 rounded-full border border-border bg-background px-4 py-2.5 text-sm disabled:opacity-60"
+              />
+              <button
+                type="submit"
+                disabled={loading || bloque}
+                aria-label="Envoyer"
+                className="rounded-full bg-primary p-2.5 text-primary-foreground disabled:opacity-50"
+              >
+                <Send className="size-4" />
+              </button>
+            </div>
+            {restant !== null && (
+              <p className="mt-2 text-center text-[11px] text-muted-foreground">
+                {restant > 0
+                  ? `${restant} message${restant > 1 ? "s" : ""} restant${restant > 1 ? "s" : ""} aujourd'hui`
+                  : "Limite de 15 messages par jour atteinte"}
+              </p>
+            )}
           </form>
         </div>
       )}
