@@ -85,13 +85,13 @@ ${current ? `\nL'utilisateur consulte actuellement : ${current.nom} (${current.a
     });
 
     if (res.status === 429) {
-      return { reply: "Trop de demandes en ce moment, réessayez dans un instant." };
+      return { reply: "Trop de demandes en ce moment, réessayez dans un instant.", restant };
     }
     if (res.status === 402) {
-      return { reply: "L'assistant est temporairement indisponible. Écrivez-nous sur WhatsApp." };
+      return { reply: "L'assistant est temporairement indisponible. Écrivez-nous sur WhatsApp.", restant };
     }
     if (!res.ok) {
-      return { reply: "Désolé, une erreur est survenue. Réessayez ou contactez-nous par téléphone." };
+      return { reply: "Désolé, une erreur est survenue. Réessayez ou contactez-nous par téléphone.", restant };
     }
 
     const json = (await res.json()) as {
@@ -101,5 +101,6 @@ ${current ? `\nL'utilisateur consulte actuellement : ${current.nom} (${current.a
       reply:
         json.choices?.[0]?.message?.content ??
         "Je n'ai pas compris, pouvez-vous reformuler ?",
+      restant,
     };
   });
