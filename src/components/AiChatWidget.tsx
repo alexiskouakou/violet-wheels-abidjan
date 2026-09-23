@@ -7,12 +7,25 @@ import { askAssistant } from "@/lib/ai-chat.functions";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
+const SESSION_KEY = "autoivoire-session-id";
+
+function getSessionId() {
+  if (typeof window === "undefined") return "";
+  let id = window.localStorage.getItem(SESSION_KEY);
+  if (!id) {
+    id = crypto.randomUUID();
+    window.localStorage.setItem(SESSION_KEY, id);
+  }
+  return id;
+}
+
 export function AiChatWidget() {
   const params = useParams({ strict: false }) as { id?: string };
   const ask = useServerFn(askAssistant);
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [restant, setRestant] = useState<number | null>(null);
   const [messages, setMessages] = useState<Msg[]>([
     {
       role: "assistant",
@@ -26,9 +39,11 @@ export function AiChatWidget() {
     endRef.current?.scrollIntoView({ block: "end" });
   }, [messages, open]);
 
+  const bloque = restant !== null && restant <= 0;
+
   const send = async () => {
     const text = input.trim();
-    if (!text || loading) return;
+    if (!text || loading || bloque) return;
     const next = [...messages, { role: "user" as const, content: text }];
     setMessages(next);
     setInput("");
@@ -36,10 +51,12 @@ export function AiChatWidget() {
     try {
       const res = await ask({
         data: {
+          sessionId: getSessionId(),
           messages: next.slice(-20).map((m) => ({ role: m.role, content: m.content })),
           ...(params.id ? { vehicleId: params.id } : {}),
         },
       });
+      setRestant(res.restant);
       setMessages([...next, { role: "assistant", content: res.reply }]);
     } catch {
       setMessages([
@@ -53,6 +70,7 @@ export function AiChatWidget() {
       setLoading(false);
     }
   };
+
 
   return (
     <>
