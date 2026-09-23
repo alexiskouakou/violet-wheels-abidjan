@@ -14,13 +14,126 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      admin_emails: {
+        Row: {
+          created_at: string
+          email: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+        }
+        Relationships: []
+      }
+      ai_chat_usage: {
+        Row: {
+          jour: string
+          messages: number
+          session_id: string
+        }
+        Insert: {
+          jour?: string
+          messages?: number
+          session_id: string
+        }
+        Update: {
+          jour?: string
+          messages?: number
+          session_id?: string
+        }
+        Relationships: []
+      }
+      vehicules: {
+        Row: {
+          annee: number
+          boite: string
+          carburant: string
+          categorie: string
+          couleur: string
+          created_at: string
+          description: string
+          equipements: string[]
+          etat: string
+          id: string
+          image: string
+          kilometrage: number
+          marque: string
+          modele: string
+          moteur: string
+          nom: string
+          places: number
+          portes: number
+          prix: number
+          publie: boolean
+          puissance: string
+          slug: string
+          transmission: string
+          ville: string
+        }
+        Insert: {
+          annee?: number
+          boite?: string
+          carburant?: string
+          categorie?: string
+          couleur?: string
+          created_at?: string
+          description?: string
+          equipements?: string[]
+          etat?: string
+          id?: string
+          image?: string
+          kilometrage?: number
+          marque?: string
+          modele?: string
+          moteur?: string
+          nom: string
+          places?: number
+          portes?: number
+          prix?: number
+          publie?: boolean
+          puissance?: string
+          slug: string
+          transmission?: string
+          ville?: string
+        }
+        Update: {
+          annee?: number
+          boite?: string
+          carburant?: string
+          categorie?: string
+          couleur?: string
+          created_at?: string
+          description?: string
+          equipements?: string[]
+          etat?: string
+          id?: string
+          image?: string
+          kilometrage?: number
+          marque?: string
+          modele?: string
+          moteur?: string
+          nom?: string
+          places?: number
+          portes?: number
+          prix?: number
+          publie?: boolean
+          puissance?: string
+          slug?: string
+          transmission?: string
+          ville?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
