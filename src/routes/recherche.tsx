@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
-import { vehicles } from "@/data/vehicles";
+import { useAllVehicles } from "@/lib/use-vehicles";
 import { VehicleCard } from "@/components/VehicleCard";
 import { VehicleFilters } from "@/components/VehicleFilters";
 import { emptyFilters, filterVehicles, loadFilters, saveFilters, type Filters } from "@/lib/filters";
@@ -28,7 +28,8 @@ export const Route = createFileRoute("/recherche")({
 
 function RecherchePage() {
   const [filters, setFilters] = useState<Filters>(() => loadFilters() ?? emptyFilters);
-  const resultats = filterVehicles(vehicles, filters);
+  const tous = useAllVehicles();
+  const resultats = filterVehicles(tous, filters);
 
   const update = (f: Filters) => {
     setFilters(f);

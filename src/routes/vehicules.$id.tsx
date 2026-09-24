@@ -1,12 +1,17 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, Check } from "lucide-react";
-import { vehicles, formatPrice, CONTACT_PHONE_DISPLAY } from "@/data/vehicles";
+import { vehicles, formatPrice, CONTACT_PHONE_DISPLAY, type Vehicle } from "@/data/vehicles";
 import { ContactButtons } from "@/components/ContactButtons";
+import { getPublishedVehicle } from "@/lib/vehicles.functions";
+import placeholder from "@/assets/car-1.jpg";
 
 export const Route = createFileRoute("/vehicules/$id")({
-  loader: ({ params }) => {
-    const vehicle = vehicles.find((v) => v.id === params.id);
-    if (!vehicle) throw notFound();
+  loader: async ({ params }) => {
+    const statique = vehicles.find((v) => v.id === params.id);
+    if (statique) return { vehicle: statique };
+    const publie = await getPublishedVehicle({ data: { slug: params.id } });
+    if (!publie) throw notFound();
+    const vehicle: Vehicle = { ...publie, image: publie.image || placeholder };
     return { vehicle };
   },
   head: ({ loaderData }) => {

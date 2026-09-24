@@ -4,7 +4,9 @@
 - [x] Filtres modifiables sous "Véhicules disponibles"
 - [x] Page /recherche avec filtres détaillés
 - [x] Assistant IA disponible sur toutes les pages, contextuel sur la fiche véhicule
-- [ ] Limiter l'assistant IA à 15 messages par jour et par visiteur
-- [ ] Page admin protégée (alexykouakou01@gmail.com) : saisie d'une description courte,
-      l'IA génère la fiche technique complète, revue puis publication
-- [ ] Afficher les véhicules publiés depuis l'admin dans le site
+- [x] Limite de 15 messages par jour et par visiteur pour l'assistant
+- [x] Espace vendeur protégé (/admin) : description courte → fiche technique générée par l'IA,
+      relecture, brouillon ou publication, modification et suppression
+- [x] Les véhicules publiés apparaissent sur l'accueil, la recherche et en page détail
+- [ ] Remplacer le numéro de téléphone provisoire (+225 07 00 00 00 00) par le vrai
+- [ ] Ajouter les photos des véhicules créés depuis l'espace vendeur (champ "Lien de la photo")
