@@ -211,6 +211,9 @@ function Index() {
             <p className="text-sm text-muted-foreground">
               Vente de véhicules à Abidjan · {CONTACT_PHONE_DISPLAY}
             </p>
+            <Link to="/admin" className="text-xs text-muted-foreground hover:text-primary">
+              Espace vendeur
+            </Link>
           </div>
           <ContactButtons />
         </div>
