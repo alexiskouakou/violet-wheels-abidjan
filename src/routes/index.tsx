@@ -13,6 +13,7 @@ import {
   saveFilters,
   type Filters,
 } from "@/lib/filters";
+import { useAllVehicles } from "@/lib/use-vehicles";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -50,7 +51,8 @@ function Index() {
     saveFilters(f);
   };
 
-  const resultats = filterVehicles(vehicles, filters);
+  const tous = useAllVehicles();
+  const resultats = filterVehicles(tous, filters);
 
   return (
     <main className="min-h-screen bg-background">
@@ -151,7 +153,7 @@ function Index() {
       <section id="vehicules" className="mx-auto max-w-6xl px-4 pb-20">
         <h2 className="text-3xl font-extrabold">Véhicules disponibles</h2>
         <p className="mt-2 text-muted-foreground">
-          {resultats.length} véhicule{resultats.length > 1 ? "s" : ""} sur {vehicles.length} correspondent à vos critères.
+          {resultats.length} véhicule{resultats.length > 1 ? "s" : ""} sur {tous.length} correspondent à vos critères.
         </p>
 
         <div className="mt-5">
