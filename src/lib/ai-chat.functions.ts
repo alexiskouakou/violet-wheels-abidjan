@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { vehicles, formatPrice, CONTACT_PHONE_DISPLAY } from "@/data/vehicles";
+import { formatPrice, CONTACT_PHONE_DISPLAY } from "@/data/vehicles";
+import { fetchPublishedVehicles } from "@/lib/vehicles.functions";
 
 export const DAILY_LIMIT = 15;
 
@@ -52,6 +53,7 @@ export const askAssistant = createServerFn({ method: "POST" })
     const restant = DAILY_LIMIT - (dejaUtilises + 1);
 
 
+    const vehicles = await fetchPublishedVehicles();
     const stock = vehicles
       .map(
         (v) =>
@@ -63,7 +65,7 @@ export const askAssistant = createServerFn({ method: "POST" })
       ? vehicles.find((v) => v.id === data.vehicleId)
       : undefined;
 
-    const system = `Tu es le conseiller commercial d'AutoIvoire, un vendeur de véhicules à Abidjan (Côte d'Ivoire).
+    const system = `Tu es le conseiller commercial de Zoom Auto, un vendeur de véhicules à Abidjan (Côte d'Ivoire).
 Réponds toujours en français, de façon courte, concrète et chaleureuse. Prix en FCFA.
 Tu peux conseiller un véhicule du stock, comparer, expliquer la démarche d'achat (carte grise, mutation, essai) et inviter à contacter le ${CONTACT_PHONE_DISPLAY} ou WhatsApp.
 N'invente jamais un véhicule qui n'est pas dans le stock.

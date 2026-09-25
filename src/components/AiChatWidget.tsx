@@ -30,7 +30,7 @@ export function AiChatWidget() {
     {
       role: "assistant",
       content:
-        "Bonjour 👋 Je suis l'assistant AutoIvoire. Posez-moi vos questions sur un véhicule, un budget ou les démarches d'achat à Abidjan.",
+        "Bonjour 👋 Je suis l'assistant Zoom Auto. Posez-moi vos questions sur un véhicule, un budget ou les démarches d'achat à Abidjan.",
     },
   ]);
   const endRef = useRef<HTMLDivElement>(null);
@@ -89,7 +89,7 @@ export function AiChatWidget() {
         <div className="fixed bottom-4 right-4 z-40 flex h-[32rem] w-[min(24rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-card">
           <div className="flex items-center justify-between border-b border-border px-4 py-3">
             <p className="flex items-center gap-2 text-sm font-bold">
-              <Bot className="size-4 text-primary" aria-hidden="true" /> Assistant AutoIvoire
+              <Bot className="size-4 text-primary" aria-hidden="true" /> Assistant Zoom Auto
             </p>
             <button
               type="button"

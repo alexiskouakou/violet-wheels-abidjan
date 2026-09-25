@@ -16,10 +16,12 @@ import {
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
-      { title: "Espace vendeur — AutoIvoire" },
+      { title: "Espace vendeur — Zoom Auto" },
       { name: "description", content: "Ajoutez un véhicule : l'IA remplit la fiche technique, vous validez avant publication." },
-      { property: "og:title", content: "Espace vendeur — AutoIvoire" },
+      { property: "og:title", content: "Espace vendeur — Zoom Auto" },
       { property: "og:description", content: "Gestion des véhicules en vente à Abidjan." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -118,7 +120,7 @@ function AdminPage() {
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
           <Link to="/" className="text-lg font-extrabold">
-            Auto<span className="text-primary">Ivoire</span>
+            Zoom <span className="text-primary">Auto</span>
           </Link>
           <button
             type="button"

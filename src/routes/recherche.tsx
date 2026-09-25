@@ -9,18 +9,20 @@ import { emptyFilters, filterVehicles, loadFilters, saveFilters, type Filters } 
 export const Route = createFileRoute("/recherche")({
   head: () => ({
     meta: [
-      { title: "Recherche avancée de véhicules à Abidjan — AutoIvoire" },
+      { title: "Recherche avancée de véhicules à Abidjan — Zoom Auto" },
       {
         name: "description",
         content:
           "Filtrez les véhicules disponibles à Abidjan par budget, type, carburant, boîte, année, kilométrage et nombre de places.",
       },
-      { property: "og:title", content: "Recherche avancée de véhicules à Abidjan — AutoIvoire" },
+      { property: "og:title", content: "Recherche avancée de véhicules à Abidjan — Zoom Auto" },
       {
         property: "og:description",
         content:
           "Trouvez la voiture qui correspond exactement à votre budget et à vos besoins à Abidjan.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: RecherchePage,
