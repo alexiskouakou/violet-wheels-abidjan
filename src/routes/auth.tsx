@@ -5,10 +5,12 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Connexion espace vendeur — AutoIvoire" },
-      { name: "description", content: "Accès réservé à l'équipe AutoIvoire pour gérer les véhicules en vente à Abidjan." },
-      { property: "og:title", content: "Connexion espace vendeur — AutoIvoire" },
-      { property: "og:description", content: "Accès réservé à l'équipe AutoIvoire." },
+      { title: "Connexion espace vendeur — Zoom Auto" },
+      { name: "description", content: "Accès réservé à l'équipe Zoom Auto pour gérer les véhicules en vente à Abidjan." },
+      { property: "og:title", content: "Connexion espace vendeur — Zoom Auto" },
+      { property: "og:description", content: "Accès réservé à l'équipe Zoom Auto." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -56,7 +58,7 @@ function AuthPage() {
         className="w-full max-w-sm rounded-3xl border border-border bg-card p-7 shadow-card"
       >
         <Link to="/" className="text-lg font-extrabold">
-          Auto<span className="text-primary">Ivoire</span>
+          Zoom <span className="text-primary">Auto</span>
         </Link>
         <h1 className="mt-4 text-xl font-bold">
           {mode === "login" ? "Connexion espace vendeur" : "Créer le compte vendeur"}

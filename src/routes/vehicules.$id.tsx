@@ -1,14 +1,12 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, Check } from "lucide-react";
-import { vehicles, formatPrice, CONTACT_PHONE_DISPLAY, type Vehicle } from "@/data/vehicles";
+import { formatPrice, CONTACT_PHONE_DISPLAY, type Vehicle } from "@/data/vehicles";
 import { ContactButtons } from "@/components/ContactButtons";
 import { getPublishedVehicle } from "@/lib/vehicles.functions";
 import placeholder from "@/assets/car-1.jpg";
 
 export const Route = createFileRoute("/vehicules/$id")({
   loader: async ({ params }) => {
-    const statique = vehicles.find((v) => v.id === params.id);
-    if (statique) return { vehicle: statique };
     const publie = await getPublishedVehicle({ data: { slug: params.id } });
     if (!publie) throw notFound();
     const vehicle: Vehicle = { ...publie, image: publie.image || placeholder };
@@ -17,7 +15,15 @@ export const Route = createFileRoute("/vehicules/$id")({
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Véhicule introuvable" }, { name: "robots", content: "noindex" }],
+        meta: [
+          { title: "Véhicule introuvable — Zoom Auto" },
+          { name: "description", content: "Ce véhicule n'est plus disponible sur Zoom Auto." },
+          { property: "og:title", content: "Véhicule introuvable — Zoom Auto" },
+          { property: "og:description", content: "Ce véhicule n'est plus disponible sur Zoom Auto." },
+          { property: "og:type", content: "website" },
+          { name: "twitter:card", content: "summary_large_image" },
+          { name: "robots", content: "noindex" },
+        ],
       };
     }
     const { vehicle } = loaderData;
@@ -29,6 +35,8 @@ export const Route = createFileRoute("/vehicules/$id")({
         { name: "description", content: description },
         { property: "og:title", content: title },
         { property: "og:description", content: description },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
       ],
     };
   },
@@ -54,8 +62,6 @@ function VehicleDetail() {
     ["État", vehicle.etat],
     ["Localisation", vehicle.ville],
   ];
-
-  const autres = vehicles.filter((v) => v.id !== vehicle.id).slice(0, 3);
 
   return (
     <main className="min-h-screen bg-background">
@@ -119,30 +125,7 @@ function VehicleDetail() {
           </ul>
         </section>
 
-        <section className="mt-14 pb-16">
-          <h2 className="text-xl font-bold">Autres véhicules disponibles</h2>
-          <div className="mt-4 grid gap-4 sm:grid-cols-3">
-            {autres.map((v) => (
-              <Link
-                key={v.id}
-                to="/vehicules/$id"
-                params={{ id: v.id }}
-                className="rounded-2xl border border-border bg-card p-3 shadow-card transition-transform hover:-translate-y-1"
-              >
-                <img
-                  src={v.image}
-                  alt={v.nom}
-                  loading="lazy"
-                  width={1200}
-                  height={800}
-                  className="aspect-[3/2] w-full rounded-xl object-cover"
-                />
-                <p className="mt-3 text-sm font-semibold">{v.nom}</p>
-                <p className="text-sm text-primary">{formatPrice(v.prix)}</p>
-              </Link>
-            ))}
-          </div>
-        </section>
+        <div className="pb-16" />
       </div>
     </main>
   );

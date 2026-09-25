@@ -1,4 +1,4 @@
-import { vehicles, type Vehicle } from "@/data/vehicles";
+import type { Vehicle } from "@/data/vehicles";
 
 export type Filters = {
   budgetMax: number | null;
@@ -77,4 +77,3 @@ export function describeFilters(f: Filters): string {
   return parts.length ? parts.join(", ") : "aucun critère";
 }
 
-export const allVehicles = vehicles;

@@ -76,6 +76,10 @@ function publicClient() {
 }
 
 export const listPublishedVehicles = createServerFn({ method: "GET" }).handler(async () => {
+  return fetchPublishedVehicles();
+});
+
+export async function fetchPublishedVehicles(): Promise<DbVehicle[]> {
   const { data, error } = await publicClient()
     .from("vehicules")
     .select("*")
@@ -83,7 +87,7 @@ export const listPublishedVehicles = createServerFn({ method: "GET" }).handler(a
     .order("created_at", { ascending: false });
   if (error) return [] as DbVehicle[];
   return ((data ?? []) as Row[]).map(toVehicle);
-});
+}
 
 export const getPublishedVehicle = createServerFn({ method: "GET" })
   .inputValidator((d: unknown) => z.object({ slug: z.string().min(1) }).parse(d))
