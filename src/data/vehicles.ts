@@ -1,5 +1,5 @@
-export const CONTACT_PHONE = "+2250700000000";
-export const CONTACT_PHONE_DISPLAY = "+225 07 00 00 00 00";
+export const CONTACT_PHONE = "+2250709727821";
+export const CONTACT_PHONE_DISPLAY = "+225 07 09 72 78 21";
 
 export type Vehicle = {
   id: string;
