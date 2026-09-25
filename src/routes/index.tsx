@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ShieldCheck, FileCheck2, Handshake, ArrowRight, SlidersHorizontal } from "lucide-react";
-import { vehicles, formatPrice, CONTACT_PHONE_DISPLAY } from "@/data/vehicles";
+import { formatPrice, CONTACT_PHONE_DISPLAY } from "@/data/vehicles";
 import { VehicleCard } from "@/components/VehicleCard";
 import { ContactButtons } from "@/components/ContactButtons";
 import { PreferencesModal } from "@/components/PreferencesModal";
@@ -18,25 +18,26 @@ import { useAllVehicles } from "@/lib/use-vehicles";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Vente de véhicules à Abidjan — Auto Ivoire" },
+      { title: "Vente de véhicules à Abidjan — Zoom Auto" },
       {
         name: "description",
         content:
           "Achetez votre voiture à Abidjan : SUV, berlines, pick-up et citadines vérifiés, prix en FCFA, contact direct par WhatsApp ou téléphone.",
       },
-      { property: "og:title", content: "Vente de véhicules à Abidjan — Auto Ivoire" },
+      { property: "og:title", content: "Vente de véhicules à Abidjan — Zoom Auto" },
       {
         property: "og:description",
         content:
           "Véhicules disponibles à Abidjan, papiers en règle et essai possible. Contactez-nous par WhatsApp ou par téléphone.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Index,
 });
 
 function Index() {
-  const vedette = vehicles.find((v) => v.vedette) ?? vehicles[0]!;
   const [filters, setFilters] = useState<Filters>(emptyFilters);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -52,6 +53,7 @@ function Index() {
   };
 
   const tous = useAllVehicles();
+  const vedette = tous[0];
   const resultats = filterVehicles(tous, filters);
 
   return (
@@ -59,7 +61,7 @@ function Index() {
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
           <span className="text-lg font-extrabold tracking-tight">
-            Auto<span className="text-primary">Ivoire</span>
+            Zoom <span className="text-primary">Auto</span>
           </span>
           <a
             href="#vehicules"
@@ -90,35 +92,41 @@ function Index() {
             </p>
           </div>
 
-          <div className="rounded-3xl bg-card p-5 shadow-card">
-            <span className="inline-block rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
-              Véhicule mis en avant
-            </span>
-            <img
-              src={vedette.image}
-              alt={`${vedette.marque} ${vedette.modele} ${vedette.annee} en vente à Abidjan`}
-              width={1600}
-              height={1000}
-              className="mt-4 aspect-[8/5] w-full rounded-2xl object-cover"
-            />
-            <h2 className="mt-5 text-2xl font-bold">{vedette.nom}</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {vedette.annee} · {new Intl.NumberFormat("fr-FR").format(vedette.kilometrage)} km ·{" "}
-              {vedette.carburant} · {vedette.boite}
-            </p>
-            <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-              <span className="text-2xl font-extrabold text-primary">
-                {formatPrice(vedette.prix)}
+          {vedette ? (
+            <div className="rounded-3xl bg-card p-5 shadow-card">
+              <span className="inline-block rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
+                Véhicule mis en avant
               </span>
-              <Link
-                to="/vehicules/$id"
-                params={{ id: vedette.id }}
-                className="inline-flex items-center gap-2 rounded-full border border-primary px-5 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
-              >
-                Voir la fiche <ArrowRight className="size-4" aria-hidden="true" />
-              </Link>
+              <img
+                src={vedette.image}
+                alt={`${vedette.marque} ${vedette.modele} ${vedette.annee} en vente à Abidjan`}
+                width={1600}
+                height={1000}
+                className="mt-4 aspect-[8/5] w-full rounded-2xl object-cover"
+              />
+              <h2 className="mt-5 text-2xl font-bold">{vedette.nom}</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {vedette.annee} · {new Intl.NumberFormat("fr-FR").format(vedette.kilometrage)} km ·{" "}
+                {vedette.carburant} · {vedette.boite}
+              </p>
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                <span className="text-2xl font-extrabold text-primary">
+                  {formatPrice(vedette.prix)}
+                </span>
+                <Link
+                  to="/vehicules/$id"
+                  params={{ id: vedette.id }}
+                  className="inline-flex items-center gap-2 rounded-full border border-primary px-5 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+                >
+                  Voir la fiche <ArrowRight className="size-4" aria-hidden="true" />
+                </Link>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="flex min-h-72 items-center justify-center rounded-3xl border border-primary-foreground/20 px-8 text-center text-primary-foreground">
+              <p className="max-w-sm font-semibold">Notre prochain véhicule sera bientôt disponible.</p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -207,7 +215,7 @@ function Index() {
       <footer className="border-t border-border bg-card">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-10 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="font-bold">AutoIvoire</p>
+            <p className="font-bold">Zoom Auto</p>
             <p className="text-sm text-muted-foreground">
               Vente de véhicules à Abidjan · {CONTACT_PHONE_DISPLAY}
             </p>
