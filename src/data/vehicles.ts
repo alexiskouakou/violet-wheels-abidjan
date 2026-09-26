@@ -23,6 +23,8 @@ export type Vehicle = {
   ville: string;
   description: string;
   equipements: string[];
+  condition?: string;
+  entreprise?: { slug: string; nom: string; logo: string } | null;
 };
 
 export const formatPrice = (n: number) =>

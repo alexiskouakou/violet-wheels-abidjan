@@ -30,6 +30,8 @@ type Row = {
   description: string;
   equipements: string[];
   publie: boolean;
+  condition?: string;
+  entreprises?: { slug: string; nom: string; logo: string } | null;
 };
 
 const toVehicle = (r: Row): DbVehicle => ({
@@ -56,9 +58,13 @@ const toVehicle = (r: Row): DbVehicle => ({
   description: r.description,
   equipements: r.equipements ?? [],
   publie: r.publie,
+  condition: r.condition ?? "Occasion",
+  entreprise: r.entreprises ?? null,
 });
 
-function publicClient() {
+const SELECT = "*, entreprises(slug, nom, logo)";
+
+export function publicClient() {
   const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
   return createClient(process.env["SUPABASE_URL"]!, key, {
     auth: { persistSession: false, autoRefreshToken: false },
@@ -82,7 +88,7 @@ export const listPublishedVehicles = createServerFn({ method: "GET" }).handler(a
 export async function fetchPublishedVehicles(): Promise<DbVehicle[]> {
   const { data, error } = await publicClient()
     .from("vehicules")
-    .select("*")
+    .select(SELECT)
     .eq("publie", true)
     .order("created_at", { ascending: false });
   if (error) return [] as DbVehicle[];
@@ -94,7 +100,7 @@ export const getPublishedVehicle = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     const { data: row, error } = await publicClient()
       .from("vehicules")
-      .select("*")
+      .select(SELECT)
       .eq("slug", data.slug)
       .eq("publie", true)
       .maybeSingle();
@@ -107,7 +113,7 @@ export const listAdminVehicles = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { data, error } = await context.supabase
       .from("vehicules")
-      .select("*")
+      .select(SELECT)
       .order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
     return ((data ?? []) as unknown as Row[]).map(toVehicle);
@@ -135,6 +141,8 @@ const ficheSchema = z.object({
   ville: z.string(),
   description: z.string(),
   equipements: z.array(z.string()),
+  entreprise: z.string().default(""),
+  condition: z.string().default("Occasion"),
 });
 
 export type Fiche = z.infer<typeof ficheSchema>;
@@ -160,8 +168,9 @@ export const generateFiche = createServerFn({ method: "POST" })
 À partir d'une description courte, produis une fiche technique complète et réaliste en français.
 Prix en FCFA (nombre entier, sans espaces). Slug en minuscules avec des tirets.
 categorie parmi: SUV, Berline, Pick-up, Citadine. carburant parmi: Essence, Diesel. boite parmi: Automatique, Manuelle.
+entreprise = nom de l'entreprise qui vend le véhicule UNIQUEMENT si elle est mentionnée (ex: "entreprise : CFAO"), sinon chaîne vide. condition parmi: Neuf, Occasion (Neuf si le véhicule est dit neuf/0 km).
 Si une information manque, propose une valeur plausible pour ce modèle.
-Réponds UNIQUEMENT par un objet JSON avec les clés: slug, nom, marque, modele, annee, prix, categorie, image, kilometrage, carburant, boite, places, portes, moteur, puissance, transmission, couleur, etat, ville, description, equipements (tableau de 5 à 8 textes). image = chaîne vide.`,
+Réponds UNIQUEMENT par un objet JSON avec les clés: slug, nom, marque, modele, annee, prix, categorie, image, kilometrage, carburant, boite, places, portes, moteur, puissance, transmission, couleur, etat, ville, description, equipements (tableau de 5 à 8 textes), entreprise, condition. image = chaîne vide.`,
           },
           { role: "user", content: data.prompt },
         ],
@@ -188,7 +197,22 @@ export const saveVehicle = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
-    const payload = { ...data.fiche, publie: data.publie };
+    const { entreprise, ...fiche } = data.fiche;
+    let entreprise_id: string | null = null;
+    const nomE = entreprise.trim();
+    if (nomE) {
+      const { data: found } = await context.supabase
+        .from("entreprises").select("id").ilike("nom", nomE).maybeSingle();
+      if (found) entreprise_id = found.id;
+      else {
+        const slug = slugify(nomE) || `entreprise-${Date.now()}`;
+        const { data: created, error: e } = await context.supabase
+          .from("entreprises").insert({ nom: nomE, slug }).select("id").single();
+        if (e) throw new Error(e.message);
+        entreprise_id = created.id;
+      }
+    }
+    const payload = { ...fiche, entreprise_id, publie: data.publie };
     const query = data.dbId
       ? context.supabase.from("vehicules").update(payload as never).eq("id", data.dbId)
       : context.supabase.from("vehicules").insert(payload as never);
@@ -212,3 +236,6 @@ export const amIAdmin = createServerFn({ method: "GET" })
     const { data } = await context.supabase.rpc("is_admin" as never);
     return { admin: data === true };
   });
+
+export const slugify = (t: string) =>
+  t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");

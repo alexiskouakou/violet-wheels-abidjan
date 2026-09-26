@@ -47,15 +47,47 @@ export type Database = {
         }
         Relationships: []
       }
+      entreprises: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          localisation: string
+          logo: string
+          nom: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          id?: string
+          localisation?: string
+          logo?: string
+          nom: string
+          slug: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          localisation?: string
+          logo?: string
+          nom?: string
+          slug?: string
+        }
+        Relationships: []
+      }
       vehicules: {
         Row: {
           annee: number
           boite: string
           carburant: string
           categorie: string
+          condition: string
           couleur: string
           created_at: string
           description: string
+          entreprise_id: string | null
           equipements: string[]
           etat: string
           id: string
@@ -79,9 +111,11 @@ export type Database = {
           boite?: string
           carburant?: string
           categorie?: string
+          condition?: string
           couleur?: string
           created_at?: string
           description?: string
+          entreprise_id?: string | null
           equipements?: string[]
           etat?: string
           id?: string
@@ -105,9 +139,11 @@ export type Database = {
           boite?: string
           carburant?: string
           categorie?: string
+          condition?: string
           couleur?: string
           created_at?: string
           description?: string
+          entreprise_id?: string | null
           equipements?: string[]
           etat?: string
           id?: string
@@ -126,7 +162,15 @@ export type Database = {
           transmission?: string
           ville?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "vehicules_entreprise_id_fkey"
+            columns: ["entreprise_id"]
+            isOneToOne: false
+            referencedRelation: "entreprises"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

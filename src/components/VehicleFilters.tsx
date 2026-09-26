@@ -14,7 +14,9 @@ export function VehicleFilters({
   filters,
   onChange,
   detailed = false,
+  entreprises = [],
 }: {
+  entreprises?: { slug: string; nom: string }[];
   filters: Filters;
   onChange: (f: Filters) => void;
   detailed?: boolean;
@@ -120,6 +122,31 @@ export function VehicleFilters({
                 <option value="">Peu importe</option>
                 <option value="5">5 places et plus</option>
                 <option value="7">7 places et plus</option>
+              </select>
+            </label>
+            <label className="text-xs font-semibold text-muted-foreground">
+              Neuf ou occasion
+              <select
+                className={`mt-1 ${selectClass}`}
+                value={filters.condition}
+                onChange={(e) => set({ condition: e.target.value })}
+              >
+                <option value="">Tous</option>
+                <option>Neuf</option>
+                <option>Occasion</option>
+              </select>
+            </label>
+            <label className="text-xs font-semibold text-muted-foreground">
+              Entreprise
+              <select
+                className={`mt-1 ${selectClass}`}
+                value={filters.entreprise}
+                onChange={(e) => set({ entreprise: e.target.value })}
+              >
+                <option value="">Toutes</option>
+                {entreprises.map((en) => (
+                  <option key={en.slug} value={en.slug}>{en.nom}</option>
+                ))}
               </select>
             </label>
           </>

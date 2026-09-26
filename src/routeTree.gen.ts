@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as RechercheRouteImport } from './routes/recherche'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as EntreprisesSlugRouteImport } from './routes/entreprises.$slug'
 import { Route as VehiculesIdRouteImport } from './routes/vehicules.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -40,6 +41,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const EntreprisesSlugRoute = EntreprisesSlugRouteImport.update({
+  id: '/entreprises/$slug',
+  path: '/entreprises/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VehiculesIdRoute = VehiculesIdRouteImport.update({
   id: '/vehicules/$id',
   path: '/vehicules/$id',
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/recherche': typeof RechercheRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/entreprises/$slug': typeof EntreprisesSlugRoute
   '/vehicules/$id': typeof VehiculesIdRoute
 }
 export interface FileRoutesByTo {
@@ -58,6 +65,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/recherche': typeof RechercheRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/entreprises/$slug': typeof EntreprisesSlugRoute
   '/vehicules/$id': typeof VehiculesIdRoute
 }
 export interface FileRoutesById {
@@ -67,13 +75,26 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/recherche': typeof RechercheRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/entreprises/$slug': typeof EntreprisesSlugRoute
   '/vehicules/$id': typeof VehiculesIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/recherche' | '/admin' | '/vehicules/$id'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/recherche'
+    | '/admin'
+    | '/entreprises/$slug'
+    | '/vehicules/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/recherche' | '/admin' | '/vehicules/$id'
+  to:
+    | '/'
+    | '/auth'
+    | '/recherche'
+    | '/admin'
+    | '/entreprises/$slug'
+    | '/vehicules/$id'
   id:
     | '__root__'
     | '/'
@@ -81,6 +102,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/recherche'
     | '/_authenticated/admin'
+    | '/entreprises/$slug'
     | '/vehicules/$id'
   fileRoutesById: FileRoutesById
 }
@@ -89,6 +111,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   RechercheRoute: typeof RechercheRoute
+  EntreprisesSlugRoute: typeof EntreprisesSlugRoute
   VehiculesIdRoute: typeof VehiculesIdRoute
 }
 
@@ -129,6 +152,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/entreprises/$slug': {
+      id: '/entreprises/$slug'
+      path: '/entreprises/$slug'
+      fullPath: '/entreprises/$slug'
+      preLoaderRoute: typeof EntreprisesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/vehicules/$id': {
       id: '/vehicules/$id'
       path: '/vehicules/$id'
@@ -155,6 +185,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   RechercheRoute: RechercheRoute,
+  EntreprisesSlugRoute: EntreprisesSlugRoute,
   VehiculesIdRoute: VehiculesIdRoute,
 }
 export const routeTree = rootRouteImport

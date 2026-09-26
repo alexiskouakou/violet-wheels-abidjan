@@ -4,6 +4,9 @@ import { ArrowLeft } from "lucide-react";
 import { useAllVehicles } from "@/lib/use-vehicles";
 import { VehicleCard } from "@/components/VehicleCard";
 import { VehicleFilters } from "@/components/VehicleFilters";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { listEntreprises } from "@/lib/entreprises.functions";
 import { emptyFilters, filterVehicles, loadFilters, saveFilters, type Filters } from "@/lib/filters";
 
 export const Route = createFileRoute("/recherche")({
@@ -31,6 +34,8 @@ export const Route = createFileRoute("/recherche")({
 function RecherchePage() {
   const [filters, setFilters] = useState<Filters>(() => loadFilters() ?? emptyFilters);
   const tous = useAllVehicles();
+  const listE = useServerFn(listEntreprises);
+  const { data: entreprises } = useQuery({ queryKey: ["entreprises"], queryFn: () => listE({}), staleTime: 60_000 });
   const resultats = filterVehicles(tous, filters);
 
   const update = (f: Filters) => {
@@ -54,7 +59,7 @@ function RecherchePage() {
         </p>
 
         <div className="mt-6">
-          <VehicleFilters filters={filters} onChange={update} detailed />
+          <VehicleFilters filters={filters} onChange={update} detailed entreprises={entreprises ?? []} />
         </div>
 
         <p className="mt-6 text-sm font-semibold">

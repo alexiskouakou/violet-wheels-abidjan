@@ -8,6 +8,8 @@ export type Filters = {
   anneeMin: number | null;
   kmMax: number | null;
   places: string;
+  entreprise: string;
+  condition: string;
 };
 
 export const emptyFilters: Filters = {
@@ -18,6 +20,8 @@ export const emptyFilters: Filters = {
   anneeMin: null,
   kmMax: null,
   places: "",
+  entreprise: "",
+  condition: "",
 };
 
 export const CATEGORIES = ["SUV", "Berline", "Pick-up", "Citadine"];
@@ -41,6 +45,8 @@ export function filterVehicles(list: Vehicle[], f: Filters): Vehicle[] {
     if (f.anneeMin && v.annee < f.anneeMin) return false;
     if (f.kmMax && v.kilometrage > f.kmMax) return false;
     if (f.places && v.places < Number(f.places)) return false;
+    if (f.entreprise && v.entreprise?.slug !== f.entreprise) return false;
+    if (f.condition && (v.condition ?? "Occasion") !== f.condition) return false;
     return true;
   });
 }
@@ -74,6 +80,8 @@ export function describeFilters(f: Filters): string {
   if (f.anneeMin) parts.push(`année min ${f.anneeMin}`);
   if (f.kmMax) parts.push(`kilométrage max ${f.kmMax}`);
   if (f.places) parts.push(`au moins ${f.places} places`);
+  if (f.entreprise) parts.push(`entreprise ${f.entreprise}`);
+  if (f.condition) parts.push(f.condition);
   return parts.length ? parts.join(", ") : "aucun critère";
 }
 
