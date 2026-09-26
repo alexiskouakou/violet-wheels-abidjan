@@ -12,6 +12,7 @@ import {
   type Fiche,
   type DbVehicle,
 } from "@/lib/vehicles.functions";
+import { EntreprisesAdmin } from "@/components/EntreprisesAdmin";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -48,6 +49,7 @@ const CHAMPS: [keyof Fiche, string, "text" | "number"][] = [
   ["etat", "État", "text"],
   ["ville", "Localisation", "text"],
   ["image", "Lien de la photo", "text"],
+  ["entreprise", "Entreprise qui vend (ex : CFAO)", "text"],
 ];
 
 function AdminPage() {
@@ -63,6 +65,7 @@ function AdminPage() {
   const [liste, setListe] = useState<DbVehicle[]>([]);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const [entreprisesKey, setEntreprisesKey] = useState(0);
 
   const recharger = async () => {
     try {
@@ -103,6 +106,7 @@ function AdminPage() {
       setDbId(undefined);
       setPrompt("");
       await recharger();
+      setEntreprisesKey((k) => k + 1);
     } catch {
       setMessage("Enregistrement impossible. Vérifiez que l'identifiant (URL) est unique.");
     } finally {
@@ -183,6 +187,18 @@ function AdminPage() {
                 </label>
               ))}
             </div>
+
+            <label className="mt-4 block text-sm">
+              <span className="font-medium">Neuf ou occasion</span>
+              <select
+                value={fiche.condition}
+                onChange={(e) => setFiche({ ...fiche, condition: e.target.value })}
+                className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm"
+              >
+                <option>Neuf</option>
+                <option>Occasion</option>
+              </select>
+            </label>
 
             <label className="mt-4 block text-sm">
               <span className="font-medium">Description</span>
@@ -270,8 +286,13 @@ function AdminPage() {
                     <button
                       type="button"
                       onClick={() => {
-                        const { dbId: _id, publie: _p, ...rest } = v;
-                        setFiche({ ...rest, slug: v.id } as Fiche);
+                        const { dbId: _id, publie: _p, entreprise: _e, ...rest } = v;
+                        setFiche({
+                          ...rest,
+                          slug: v.id,
+                          entreprise: v.entreprise?.nom ?? "",
+                          condition: v.condition ?? "Occasion",
+                        } as Fiche);
                         setDbId(v.dbId);
                         window.scrollTo({ top: 0, behavior: "smooth" });
                       }}
@@ -296,6 +317,8 @@ function AdminPage() {
             </ul>
           )}
         </section>
+
+        <EntreprisesAdmin key={entreprisesKey} />
       </div>
     </main>
   );
