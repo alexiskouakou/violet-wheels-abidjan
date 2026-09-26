@@ -59,6 +59,7 @@ function VehicleDetail() {
     ["Places", `${vehicle.places}`],
     ["Portes", `${vehicle.portes}`],
     ["Couleur", vehicle.couleur],
+    ["Neuf / Occasion", vehicle.condition ?? "Occasion"],
     ["État", vehicle.etat],
     ["Localisation", vehicle.ville],
   ];
@@ -87,6 +88,18 @@ function VehicleDetail() {
             <p className="mt-1 text-sm text-muted-foreground">
               {vehicle.annee} · {vehicle.ville}
             </p>
+            {vehicle.entreprise && (
+              <Link
+                to="/entreprises/$slug"
+                params={{ slug: vehicle.entreprise.slug }}
+                className="mt-3 inline-flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-sm hover:border-primary"
+              >
+                {vehicle.entreprise.logo && (
+                  <img src={vehicle.entreprise.logo} alt="" className="size-6 rounded object-contain" />
+                )}
+                Vendu par <span className="font-semibold text-primary">{vehicle.entreprise.nom}</span>
+              </Link>
+            )}
             <p className="mt-4 text-3xl font-extrabold text-primary">
               {formatPrice(vehicle.prix)}
             </p>

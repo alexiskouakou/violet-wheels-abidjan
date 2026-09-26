@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ShieldCheck, FileCheck2, Handshake, ArrowRight, SlidersHorizontal } from "lucide-react";
+import { ArrowRight, SlidersHorizontal } from "lucide-react";
 import { formatPrice, CONTACT_PHONE_DISPLAY } from "@/data/vehicles";
 import { VehicleCard } from "@/components/VehicleCard";
 import { ContactButtons } from "@/components/ContactButtons";
@@ -14,6 +14,7 @@ import {
   type Filters,
 } from "@/lib/filters";
 import { useAllVehicles } from "@/lib/use-vehicles";
+import { EntreprisesStrip } from "@/components/EntreprisesStrip";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -130,33 +131,7 @@ function Index() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-14">
-        <div className="grid gap-6 sm:grid-cols-3">
-          {[
-            {
-              icon: ShieldCheck,
-              titre: "Véhicules vérifiés",
-              texte: "Contrôle mécanique et historique du kilométrage avant mise en vente.",
-            },
-            {
-              icon: FileCheck2,
-              titre: "Papiers en règle",
-              texte: "Carte grise, visite technique et mutation accompagnée à Abidjan.",
-            },
-            {
-              icon: Handshake,
-              titre: "Prix négociés",
-              texte: "Paiement échelonné possible et reprise de votre ancien véhicule.",
-            },
-          ].map(({ icon: Icon, titre, texte }) => (
-            <div key={titre} className="rounded-2xl border border-border bg-card p-6 shadow-card">
-              <Icon className="size-6 text-primary" aria-hidden="true" />
-              <h3 className="mt-3 font-semibold">{titre}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">{texte}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <EntreprisesStrip />
 
       <section id="vehicules" className="mx-auto max-w-6xl px-4 pb-20">
         <h2 className="text-3xl font-extrabold">Véhicules disponibles</h2>
