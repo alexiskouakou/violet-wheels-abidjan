@@ -12,3 +12,4 @@
 - [x] Renommer le service Zoom Auto
 - [ ] Remplacer le numéro de téléphone provisoire (+225 07 00 00 00 00) par le vrai
 - [ ] Ajouter les photos des véhicules créés depuis l'espace vendeur (champ "Lien de la photo")
+- [x] Entreprise vendeuse + Neuf/Occasion dans la fiche IA, filtres, pages entreprise, logos à l'accueil
