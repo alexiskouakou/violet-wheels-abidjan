@@ -22,7 +22,7 @@ const schema = z.object({
 export const askAssistant = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => schema.parse(data))
   .handler(async ({ data }) => {
-    const apiKey = process.env["LOVABLE_API_KEY"];
+    const apiKey = process.env["OPENROUTER_API_KEY"];
     if (!apiKey) {
       return { reply: "L'assistant est momentanément indisponible. Contactez-nous sur WhatsApp.", restant: 0 };
     }
@@ -74,14 +74,16 @@ Stock disponible :
 ${stock}
 ${current ? `\nL'utilisateur consulte actuellement : ${current.nom} (${current.annee}) à ${formatPrice(current.prix)}. ${current.description}` : ""}`;
 
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
+        "HTTP-Referer": "https://violet-wheels-abidjan.lovable.app",
+        "X-Title": "Zoom Auto",
       },
       body: JSON.stringify({
-        model: "google/gemini-3.8-flash",
+        model: "google/gemini-2.0-flash-001",
         messages: [{ role: "system", content: system }, ...data.messages],
       }),
     });
