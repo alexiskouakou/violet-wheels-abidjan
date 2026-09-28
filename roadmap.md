@@ -10,6 +10,7 @@
 - [x] Les véhicules publiés apparaissent sur l'accueil, la recherche et en page détail
 - [x] Retirer le catalogue de démonstration et afficher uniquement les véhicules de l'espace vendeur
 - [x] Renommer le service Zoom Auto
-- [ ] Remplacer le numéro de téléphone provisoire (+225 07 00 00 00 00) par le vrai
+- [x] Remplacer le numéro de téléphone provisoire par le numéro officiel
 - [ ] Ajouter les photos des véhicules créés depuis l'espace vendeur (champ "Lien de la photo")
 - [x] Entreprise vendeuse + Neuf/Occasion dans la fiche IA, filtres, pages entreprise, logos à l'accueil
+- [x] Intégrer le logo officiel Zoom Auto et corriger la présentation du service

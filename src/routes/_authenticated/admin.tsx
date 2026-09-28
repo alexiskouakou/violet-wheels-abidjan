@@ -13,6 +13,7 @@ import {
   type DbVehicle,
 } from "@/lib/vehicles.functions";
 import { EntreprisesAdmin } from "@/components/EntreprisesAdmin";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -123,8 +124,8 @@ function AdminPage() {
     <main className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
-          <Link to="/" className="text-lg font-extrabold">
-            Zoom <span className="text-primary">Auto</span>
+          <Link to="/" aria-label="Accueil Zoom Auto">
+            <BrandLogo className="h-9 w-auto max-w-40 object-contain" />
           </Link>
           <button
             type="button"

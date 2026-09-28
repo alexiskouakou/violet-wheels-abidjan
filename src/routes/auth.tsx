@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -57,8 +58,8 @@ function AuthPage() {
         onSubmit={submit}
         className="w-full max-w-sm rounded-3xl border border-border bg-card p-7 shadow-card"
       >
-        <Link to="/" className="text-lg font-extrabold">
-          Zoom <span className="text-primary">Auto</span>
+        <Link to="/" aria-label="Accueil Zoom Auto">
+          <BrandLogo className="h-10 w-auto max-w-44 object-contain" />
         </Link>
         <h1 className="mt-4 text-xl font-bold">
           {mode === "login" ? "Connexion espace vendeur" : "Créer le compte vendeur"}
