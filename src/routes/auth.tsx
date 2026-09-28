@@ -40,6 +40,10 @@ function AuthPage() {
           });
     setLoading(false);
     if (error) {
+      console.error("[AUTH] Erreur complète:", error);
+      console.error("[AUTH] Message:", error.message);
+      console.error("[AUTH] Code:", (error as { code?: string }).code);
+      console.error("[AUTH] Stack:", error.stack);
       setErreur(
         error.message.includes("Invalid login")
           ? "E-mail ou mot de passe incorrect."
