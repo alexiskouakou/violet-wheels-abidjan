@@ -153,7 +153,9 @@ export const generateFiche = createServerFn({ method: "POST" })
     z.object({ prompt: z.string().min(5).max(600) }).parse(d),
   )
   .handler(async ({ data }) => {
+    console.log("[FICHE] Handler appelé avec prompt:", data.prompt);
     const apiKey = process.env["OPENROUTER_API_KEY"];
+    console.log("[FICHE] OPENROUTER_API_KEY défini:", !!apiKey);
     if (!apiKey) throw new Error("Assistant indisponible");
 
     const url = "https://openrouter.ai/api/v1/chat/completions";

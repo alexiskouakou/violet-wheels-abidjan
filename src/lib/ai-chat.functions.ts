@@ -22,7 +22,9 @@ const schema = z.object({
 export const askAssistant = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => schema.parse(data))
   .handler(async ({ data }) => {
+    console.log("[AI-CHAT] Handler appelé avec data:", JSON.stringify(data).slice(0, 200));
     const apiKey = process.env["OPENROUTER_API_KEY"];
+    console.log("[AI-CHAT] OPENROUTER_API_KEY défini:", !!apiKey);
     if (!apiKey) {
       return { reply: "L'assistant est momentanément indisponible. Contactez-nous sur WhatsApp.", restant: 0 };
     }
