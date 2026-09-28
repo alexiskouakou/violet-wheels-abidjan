@@ -71,7 +71,10 @@ function AdminPage() {
   const recharger = async () => {
     try {
       setListe(await lister({}));
-    } catch {
+    } catch (err) {
+      console.error("[ADMIN] Erreur complète:", err);
+      console.error("[ADMIN] Message:", err instanceof Error ? err.message : String(err));
+      console.error("[ADMIN] Stack:", err instanceof Error ? err.stack : "N/A");
       setMessage("Accès refusé : ce compte n'est pas administrateur.");
     }
   };
