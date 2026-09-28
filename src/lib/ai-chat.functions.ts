@@ -199,7 +199,7 @@ ${current ? `\nL'utilisateur consulte actuellement : ${current.nom} (${current.a
       const url = "https://openrouter.ai/api/v1/chat/completions";
 
       const body = JSON.stringify({
-        model: "google/gemini-2.0-flash-001",
+        model: "google/gemini-2.5-flash-lite",
         messages: [
           {
             role: "system",
@@ -214,7 +214,7 @@ ${current ? `\nL'utilisateur consulte actuellement : ${current.nom} (${current.a
       console.error("[AI-CHAT] ========================================");
 
       console.error("[AI-CHAT] URL:", url);
-      console.error("[AI-CHAT] Model:", "google/gemini-2.0-flash-001");
+      console.error("[AI-CHAT] Model:", "google/gemini-2.5-flash-lite");
       console.error("[AI-CHAT] Messages:", data.messages.length);
       console.error("[AI-CHAT] API key présente:", Boolean(apiKey));
 

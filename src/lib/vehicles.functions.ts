@@ -160,7 +160,7 @@ export const generateFiche = createServerFn({ method: "POST" })
 
     const url = "https://openrouter.ai/api/v1/chat/completions";
     const body = JSON.stringify({
-      model: "google/gemini-2.0-flash-001",
+      model: "google/gemini-2.5-flash-lite",
       messages: [
         {
           role: "system",
@@ -180,7 +180,7 @@ Réponds UNIQUEMENT par un objet JSON avec les clés: slug, nom, marque, modele,
     console.log("[FICHE] Tentative d'appel OpenRouter...");
     console.log("[FICHE] URL:", url);
     console.log("[FICHE] API Key (10 premiers caractères):", apiKey.slice(0, 10) + "...");
-    console.log("[FICHE] Model:", "google/gemini-2.0-flash-001");
+    console.log("[FICHE] Model:", "google/gemini-2.5-flash-lite");
     console.log("[FICHE] Prompt:", data.prompt);
 
     const res = await fetch(url, {
