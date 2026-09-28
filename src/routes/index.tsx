@@ -15,6 +15,7 @@ import {
 } from "@/lib/filters";
 import { useAllVehicles } from "@/lib/use-vehicles";
 import { EntreprisesStrip } from "@/components/EntreprisesStrip";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -23,13 +24,13 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Achetez votre voiture à Abidjan : SUV, berlines, pick-up et citadines vérifiés, prix en FCFA, contact direct par WhatsApp ou téléphone.",
+          "Comparez les véhicules proposés par des concessionnaires et partenaires automobiles à Abidjan, puis échangez avec notre équipe ou notre IA.",
       },
       { property: "og:title", content: "Vente de véhicules à Abidjan — Zoom Auto" },
       {
         property: "og:description",
         content:
-          "Véhicules disponibles à Abidjan, papiers en règle et essai possible. Contactez-nous par WhatsApp ou par téléphone.",
+          "Découvrez les offres de véhicules de concessionnaires et partenaires automobiles à Abidjan.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -61,9 +62,7 @@ function Index() {
     <main className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-          <span className="text-lg font-extrabold tracking-tight">
-            Zoom <span className="text-primary">Auto</span>
-          </span>
+          <BrandLogo className="h-10 w-auto max-w-44 object-contain" />
           <a
             href="#vehicules"
             className="text-sm font-medium text-muted-foreground hover:text-primary"
@@ -83,9 +82,10 @@ function Index() {
               Votre prochaine voiture, achetée en toute confiance à Abidjan
             </h1>
             <p className="mt-4 max-w-lg text-base opacity-90">
-              Nous sélectionnons, vérifions et vendons des véhicules d'occasion et
-              quasi neufs à Abidjan. Papiers en règle, essai sur place et
-              accompagnement jusqu'à la mutation de la carte grise.
+              Votre véhicule, simplement. ZoomAuto vous donne accès à une sélection de
+              véhicules proposés par des concessionnaires et partenaires automobiles.
+              Comparez les offres, demandez conseil à notre IA ou échangez directement
+              avec notre équipe pour être accompagné dans votre achat.
             </p>
             <ContactButtons className="mt-8" />
             <p className="mt-4 text-sm opacity-80">
@@ -190,7 +190,7 @@ function Index() {
       <footer className="border-t border-border bg-card">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-10 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="font-bold">Zoom Auto</p>
+            <BrandLogo className="h-9 w-auto max-w-40 object-contain" />
             <p className="text-sm text-muted-foreground">
               Vente de véhicules à Abidjan · {CONTACT_PHONE_DISPLAY}
             </p>
