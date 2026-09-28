@@ -21,7 +21,9 @@ export const Route = createFileRoute("/vehicules/$id")({
           { property: "og:title", content: "Véhicule introuvable — Zoom Auto" },
           { property: "og:description", content: "Ce véhicule n'est plus disponible sur Zoom Auto." },
           { property: "og:type", content: "website" },
+          { property: "og:image", content: "https://occasion.automobile.tn/2025/11/120863/2eMAlMrypk29_YYkrVOSQ7Rl0_max.jpeg?t=73eabcbd7471752de5c2001f02a8aa76" },
           { name: "twitter:card", content: "summary_large_image" },
+          { name: "twitter:image", content: "https://occasion.automobile.tn/2025/11/120863/2eMAlMrypk29_YYkrVOSQ7Rl0_max.jpeg?t=73eabcbd7471752de5c2001f02a8aa76" },
           { name: "robots", content: "noindex" },
         ],
       };
@@ -36,7 +38,9 @@ export const Route = createFileRoute("/vehicules/$id")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:type", content: "website" },
+        { property: "og:image", content: "https://occasion.automobile.tn/2025/11/120863/2eMAlMrypk29_YYkrVOSQ7Rl0_max.jpeg?t=73eabcbd7471752de5c2001f02a8aa76" },
         { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:image", content: "https://occasion.automobile.tn/2025/11/120863/2eMAlMrypk29_YYkrVOSQ7Rl0_max.jpeg?t=73eabcbd7471752de5c2001f02a8aa76" },
       ],
     };
   },

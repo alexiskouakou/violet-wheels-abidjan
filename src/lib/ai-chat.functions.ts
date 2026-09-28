@@ -230,7 +230,7 @@ ${current ? `\nL'utilisateur consulte actuellement : ${current.nom} (${current.a
           headers: {
             Authorization: `Bearer ${apiKey}`,
             "Content-Type": "application/json",
-            "HTTP-Referer": "https://zoomauto.vercel.app",
+            "HTTP-Referer": "https://zoomauto.site",
             "X-Title": "Zoom Auto",
           },
           body,
