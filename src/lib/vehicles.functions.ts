@@ -156,7 +156,32 @@ export const generateFiche = createServerFn({ method: "POST" })
     const apiKey = process.env["OPENROUTER_API_KEY"];
     if (!apiKey) throw new Error("Assistant indisponible");
 
-    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    const url = "https://openrouter.ai/api/v1/chat/completions";
+    const body = JSON.stringify({
+      model: "google/gemini-2.0-flash-001",
+      messages: [
+        {
+          role: "system",
+          content: `Tu es expert automobile pour un concessionnaire à Abidjan (Côte d'Ivoire).
+À partir d'une description courte, produis une fiche technique complète et réaliste en français.
+Prix en FCFA (nombre entier, sans espaces). Slug en minuscules avec des tirets.
+categorie parmi: SUV, Berline, Pick-up, Citadine. carburant parmi: Essence, Diesel. boite parmi: Automatique, Manuelle.
+entreprise = nom de l'entreprise qui vend le véhicule UNIQUEMENT si elle est mentionnée (ex: "entreprise : CFAO"), sinon chaîne vide. condition parmi: Neuf, Occasion (Neuf si le véhicule est dit neuf/0 km).
+Si une information manque, propose une valeur plausible pour ce modèle.
+Réponds UNIQUEMENT par un objet JSON avec les clés: slug, nom, marque, modele, annee, prix, categorie, image, kilometrage, carburant, boite, places, portes, moteur, puissance, transmission, couleur, etat, ville, description, equipements (tableau de 5 à 8 textes), entreprise, condition. image = chaîne vide.`,
+        },
+        { role: "user", content: data.prompt },
+      ],
+      response_format: { type: "json_object" },
+    });
+
+    console.log("[FICHE] Tentative d'appel OpenRouter...");
+    console.log("[FICHE] URL:", url);
+    console.log("[FICHE] API Key (10 premiers caractères):", apiKey.slice(0, 10) + "...");
+    console.log("[FICHE] Model:", "google/gemini-2.0-flash-001");
+    console.log("[FICHE] Prompt:", data.prompt);
+
+    const res = await fetch(url, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
@@ -164,26 +189,17 @@ export const generateFiche = createServerFn({ method: "POST" })
         "HTTP-Referer": "https://violet-wheels-abidjan.lovable.app",
         "X-Title": "Zoom Auto",
       },
-      body: JSON.stringify({
-        model: "google/gemini-2.0-flash-001",
-        messages: [
-          {
-            role: "system",
-            content: `Tu es expert automobile pour un concessionnaire à Abidjan (Côte d'Ivoire).
-À partir d'une description courte, produis une fiche technique complète et réaliste en français.
-Prix en FCFA (nombre entier, sans espaces). Slug en minuscules avec des tirets.
-categorie parmi: SUV, Berline, Pick-up, Citadine. carburant parmi: Essence, Diesel. boite parmi: Automatique, Manuelle.
-entreprise = nom de l'entreprise qui vend le véhicule UNIQUEMENT si elle est mentionnée (ex: "entreprise : CFAO"), sinon chaîne vide. condition parmi: Neuf, Occasion (Neuf si le véhicule est dit neuf/0 km).
-Si une information manque, propose une valeur plausible pour ce modèle.
-Réponds UNIQUEMENT par un objet JSON avec les clés: slug, nom, marque, modele, annee, prix, categorie, image, kilometrage, carburant, boite, places, portes, moteur, puissance, transmission, couleur, etat, ville, description, equipements (tableau de 5 à 8 textes), entreprise, condition. image = chaîne vide.`,
-          },
-          { role: "user", content: data.prompt },
-        ],
-        response_format: { type: "json_object" },
-      }),
+      body,
     });
 
-    if (!res.ok) throw new Error("Génération impossible pour le moment");
+    console.log("[FICHE] Réponse reçue - Status:", res.status);
+    console.log("[FICHE] Headers de réponse:", Object.fromEntries(res.headers.entries()));
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error("[FICHE] Erreur OpenRouter:", errorText);
+      throw new Error("Génération impossible pour le moment");
+    }
     const json = (await res.json()) as { choices?: { message?: { content?: string } }[] };
     const raw = json.choices?.[0]?.message?.content ?? "{}";
     const parsed = JSON.parse(raw.replace(/^```json|```$/g, "").trim()) as unknown;

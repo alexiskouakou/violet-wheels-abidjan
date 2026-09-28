@@ -74,7 +74,19 @@ Stock disponible :
 ${stock}
 ${current ? `\nL'utilisateur consulte actuellement : ${current.nom} (${current.annee}) à ${formatPrice(current.prix)}. ${current.description}` : ""}`;
 
-    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    const url = "https://openrouter.ai/api/v1/chat/completions";
+    const body = JSON.stringify({
+      model: "google/gemini-2.0-flash-001",
+      messages: [{ role: "system", content: system }, ...data.messages],
+    });
+
+    console.log("[AI-CHAT] Tentative d'appel OpenRouter...");
+    console.log("[AI-CHAT] URL:", url);
+    console.log("[AI-CHAT] API Key (10 premiers caractères):", apiKey.slice(0, 10) + "...");
+    console.log("[AI-CHAT] Model:", "google/gemini-2.0-flash-001");
+    console.log("[AI-CHAT] Nombre de messages:", data.messages.length);
+
+    const res = await fetch(url, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
@@ -82,11 +94,11 @@ ${current ? `\nL'utilisateur consulte actuellement : ${current.nom} (${current.a
         "HTTP-Referer": "https://violet-wheels-abidjan.lovable.app",
         "X-Title": "Zoom Auto",
       },
-      body: JSON.stringify({
-        model: "google/gemini-2.0-flash-001",
-        messages: [{ role: "system", content: system }, ...data.messages],
-      }),
+      body,
     });
+
+    console.log("[AI-CHAT] Réponse reçue - Status:", res.status);
+    console.log("[AI-CHAT] Headers de réponse:", Object.fromEntries(res.headers.entries()));
 
     if (res.status === 429) {
       return { reply: "Trop de demandes en ce moment, réessayez dans un instant.", restant };
