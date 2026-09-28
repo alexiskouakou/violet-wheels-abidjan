@@ -11,7 +11,4 @@ export default defineNitroConfig({
   minify: false,
   analyze: false,
   moduleSideEffects: ["**/*.css"],
-  rollupConfig: {
-    external: ["@supabase/supabase-js"],
-  },
 });
